@@ -1,0 +1,6 @@
+{
+  "include": ["./**/*.ts", "./src/bun.d.ts"],
+  "compilerOptions": {
+    "moduleResolution": "node"
+  }
+}

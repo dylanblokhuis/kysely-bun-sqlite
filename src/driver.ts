@@ -66,6 +66,10 @@ class BunSqliteConnection implements DatabaseConnection {
       rows: stmt.all(parameters as any) as O[],
     })
   }
+
+  async *streamQuery() {
+    throw new Error("Streaming query is not supported by SQLite driver.");
+  }
 }
 
 class ConnectionMutex {

@@ -1,13 +1,14 @@
 {
   "name": "kysely-bun-sqlite",
-  "module": "dist/index.mjs",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "type": "module",
   "repository": {
     "type": "git",
     "url": "https://github.com/dylanblokhuis/kysely-bun-sqlite"
   },
-  "version": "0.2.0",
+  "version": "0.2.1",
   "files": [
     "dist"
   ],
@@ -20,6 +21,6 @@
     "kysely": "^0.26.3"
   },
   "scripts": {
-    "build": "tsup-node src/index.ts --dts --format=esm"
+    "build": "tsup-node src/index.ts --dts --format=esm,cjs"
   }
 }

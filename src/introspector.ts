@@ -11,9 +11,9 @@ import {
 } from 'kysely'
 
 export class BunSqliteIntrospector implements DatabaseIntrospector {
-  readonly #db: Kysely<any>
+  readonly #db: Kysely<unknown>
 
-  constructor(db: Kysely<any>) {
+  constructor(db: Kysely<unknown>) {
     this.#db = db
   }
 
@@ -26,15 +26,21 @@ export class BunSqliteIntrospector implements DatabaseIntrospector {
     options: DatabaseMetadataOptions = { withInternalKyselyTables: false }
   ): Promise<TableMetadata[]> {
     let query = this.#db
+      // @ts-ignore
       .selectFrom('sqlite_schema')
+      // @ts-ignore
       .where('type', '=', 'table')
+      // @ts-ignore
       .where('name', 'not like', 'sqlite_%')
+      // @ts-ignore
       .select('name')
-      .castTo<{ name: string }>()
+      .$castTo<{ name: string }>()
 
     if (!options.withInternalKyselyTables) {
       query = query
+        // @ts-ignore
         .where('name', '!=', DEFAULT_MIGRATION_TABLE)
+        // @ts-ignore
         .where('name', '!=', DEFAULT_MIGRATION_LOCK_TABLE)
     }
 
@@ -55,10 +61,13 @@ export class BunSqliteIntrospector implements DatabaseIntrospector {
 
     // Get the SQL that was used to create the table.
     const createSql = await db
+      // @ts-ignore
       .selectFrom('sqlite_master')
+      // @ts-ignore
       .where('name', '=', table)
+      // @ts-ignore
       .select('sql')
-      .castTo<{ sql: string | undefined }>()
+      .$castTo<{ sql: string | undefined }>()
       .execute()
 
     // Try to find the name of the column that has `autoincrement` 🤦
@@ -89,6 +98,7 @@ export class BunSqliteIntrospector implements DatabaseIntrospector {
         isAutoIncrementing: col.name === autoIncrementCol,
         hasDefaultValue: col.dflt_value != null,
       })),
+      isView: true,
     }
   }
 }

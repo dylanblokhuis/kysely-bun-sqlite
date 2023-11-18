@@ -1,6 +1,6 @@
 import { Database } from "bun:sqlite"
 import { CompiledQuery, DatabaseConnection, Driver, QueryResult } from "kysely"
-import { BunSqliteDialectConfig } from "./config"
+import { BunSqliteDialectConfig } from "./config.ts"
 
 export class BunSqliteDriver implements Driver {
   readonly #config: BunSqliteDialectConfig
@@ -65,6 +65,10 @@ class BunSqliteConnection implements DatabaseConnection {
     return Promise.resolve({
       rows: stmt.all(parameters as any) as O[],
     })
+  }
+
+  async *streamQuery() {
+    throw new Error("Streaming query is not supported by SQLite driver.");
   }
 }
 

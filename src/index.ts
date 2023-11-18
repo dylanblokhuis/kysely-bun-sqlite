@@ -1,1 +1,1 @@
-export { BunSqliteDialect } from "./dialect";
+export { BunSqliteDialect } from "./dialect.ts";

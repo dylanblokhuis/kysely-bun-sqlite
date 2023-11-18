@@ -1,6 +1,15 @@
 {
-  "include": ["./**/*.ts", "./src/bun.d.ts"],
   "compilerOptions": {
-    "moduleResolution": "node"
+    "lib": [
+      "ESNext"
+    ],
+    "module": "NodeNext",
+    "target": "esnext",
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
+    // "bun-types" is the important part
+    "types": [
+      "bun-types"
+    ]
   }
 }

@@ -1,7 +1,7 @@
 import { FileMigrationProvider, Kysely, Migrator } from "kysely";
 import { BunSqliteDialect } from "../../src/index.ts";
 
-import { ColumnType, Generated, Insertable, Selectable, Updateable } from 'kysely'
+import { Generated } from 'kysely'
 import { Database } from "bun:sqlite";
 import fs from "node:fs/promises";
 import path from "node:path"

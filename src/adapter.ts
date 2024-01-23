@@ -1,12 +1,16 @@
 import { DialectAdapterBase } from "kysely"
 
 export class BunSqliteAdapter implements DialectAdapterBase {
+  get supportsCreateIfNotExists(): boolean {
+    return true
+  }
+
   get supportsTransactionalDdl(): boolean {
     return false
   }
 
   get supportsReturning(): boolean {
-    return false
+    return true
   }
 
   async acquireMigrationLock(): Promise<void> {

@@ -62,8 +62,18 @@ class BunSqliteConnection implements DatabaseConnection {
     const { sql, parameters } = compiledQuery
     const stmt = this.#db.prepare(sql)
 
+    if (stmt.columnNames.length > 0) {
+      return Promise.resolve({
+        rows: stmt.all(parameters as any) as O[],
+      })
+    }
+
+    const results = stmt.run(parameters as any)
+
     return Promise.resolve({
-      rows: stmt.all(parameters as any) as O[],
+      insertId: BigInt(results.lastInsertRowid),
+      numAffectedRows: BigInt(results.changes),
+      rows: [],
     })
   }
 

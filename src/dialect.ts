@@ -1,9 +1,6 @@
-import { DatabaseIntrospector, Dialect, DialectAdapter, Driver, Kysely, QueryCompiler, SqliteDialectConfig } from "kysely"
-import { BunSqliteAdapter } from "./adapter.ts"
+import { DatabaseIntrospector, Dialect, DialectAdapter, Driver, Kysely, QueryCompiler, SqliteAdapter, SqliteIntrospector, SqliteQueryCompiler } from "kysely"
 import { BunSqliteDialectConfig } from "./config.ts"
 import { BunSqliteDriver } from "./driver.ts"
-import { BunSqliteIntrospector } from "./introspector.ts"
-import { BunSqliteQueryCompiler } from "./query-compiler.ts"
 
 export class BunSqliteDialect implements Dialect {
   readonly #config: BunSqliteDialectConfig
@@ -17,14 +14,14 @@ export class BunSqliteDialect implements Dialect {
   }
 
   createQueryCompiler(): QueryCompiler {
-    return new BunSqliteQueryCompiler()
+    return new SqliteQueryCompiler()
   }
 
   createAdapter(): DialectAdapter {
-    return new BunSqliteAdapter()
+    return new SqliteAdapter()
   }
 
   createIntrospector(db: Kysely<any>): DatabaseIntrospector {
-    return new BunSqliteIntrospector(db)
+    return new SqliteIntrospector(db)
   }
 }

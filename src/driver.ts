@@ -62,13 +62,32 @@ class BunSqliteConnection implements DatabaseConnection {
     const { sql, parameters } = compiledQuery
     const stmt = this.#db.prepare(sql)
 
+    if (stmt.columnNames.length > 0) {
+      return Promise.resolve({
+        rows: stmt.all(parameters as any) as O[],
+      })
+    }
+
+    const results = stmt.run(parameters as any)
+
     return Promise.resolve({
-      rows: stmt.all(parameters as any) as O[],
+      insertId: BigInt(results.lastInsertRowid),
+      numAffectedRows: BigInt(results.changes),
+      rows: [],
     })
   }
 
-  async *streamQuery() {
-    throw new Error("Streaming query is not supported by SQLite driver.");
+  async *streamQuery<R>(compiledQuery: CompiledQuery): AsyncIterableIterator<QueryResult<R>> {
+    const { sql, parameters } = compiledQuery;
+    const stmt = this.#db.prepare(sql);
+
+    if (!('iterator' in stmt)) {
+      throw new Error("bun:sqlite supports streaming in 1.1.31 or above. Please upgrade to use streaming.")
+    }
+
+    for await (const row of stmt.iterate(parameters as any)) {
+      yield { rows: [row as R] }
+    }
   }
 }
 

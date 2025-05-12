@@ -1,11 +1,15 @@
 {
   "name": "kysely-bun-sqlite",
-  "version": "0.3.2",
+  "version": "0.4.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/dylanblokhuis/kysely-bun-sqlite"
   },
-  "keywords": ["kysely", "bun", "sqlite"],
+  "keywords": [
+    "kysely",
+    "bun",
+    "sqlite"
+  ],
   "license": "MIT",
   "type": "module",
   "main": "./dist/index.cjs",

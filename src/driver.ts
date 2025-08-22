@@ -1,6 +1,13 @@
 import { Database } from "bun:sqlite"
-import { CompiledQuery, DatabaseConnection, Driver, QueryResult } from "kysely"
+import { CompiledQuery, DatabaseConnection, Driver, IdentifierNode, QueryCompiler, QueryResult, RawNode, createQueryId } from "kysely"
 import { BunSqliteDialectConfig } from "./config.ts"
+
+function parseSavepointCommand(command: string, savepointName: string): RawNode {
+  return RawNode.createWithChildren([
+    RawNode.createWithSql(`${command} `),
+    IdentifierNode.create(savepointName), // ensures savepointName gets sanitized
+  ]);
+}
 
 export class BunSqliteDriver implements Driver {
   readonly #config: BunSqliteDialectConfig
@@ -40,6 +47,36 @@ export class BunSqliteDriver implements Driver {
 
   async rollbackTransaction(connection: DatabaseConnection): Promise<void> {
     await connection.executeQuery(CompiledQuery.raw('rollback'))
+  }
+
+  async savepoint(
+    connection: DatabaseConnection,
+    savepointName: string,
+    compileQuery: QueryCompiler['compileQuery']
+  ): Promise<void> {
+    await connection.executeQuery(
+      compileQuery(parseSavepointCommand('savepoint', savepointName), createQueryId())
+    );
+  }
+
+  async rollbackToSavepoint(
+    connection: DatabaseConnection,
+    savepointName: string,
+    compileQuery: QueryCompiler['compileQuery']
+  ): Promise<void> {
+    await connection.executeQuery(
+      compileQuery(parseSavepointCommand('rollback to', savepointName), createQueryId())
+    );
+  }
+
+  async releaseSavepoint(
+    connection: DatabaseConnection,
+    savepointName: string,
+    compileQuery: QueryCompiler['compileQuery']
+  ): Promise<void> {
+    await connection.executeQuery(
+      compileQuery(parseSavepointCommand('release', savepointName), createQueryId())
+    );
   }
 
   async releaseConnection(): Promise<void> {
